@@ -28,6 +28,3 @@ jobs:
             with:
               name: daily-artifact
               path: daily_report.txt
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
