@@ -6,7 +6,7 @@ name: Daily File Upload
 on:
   schedule:
         # Runs at 00:00 UTC every day
-        - cron: '*/5 * * * *'
+        - cron: '0 5 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
