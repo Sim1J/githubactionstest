@@ -1,0 +1,14 @@
+{
+  "water": [
+    { "id": "site_A", "url": "https://api.weather.gov/gridpoints/LWX/97,71/forecast/hourly" },
+    { "id": "site_B", "url": "https://api.weather.gov/gridpoints/LOX/177,46/forecast/hourly" }
+  ],
+  "electricity": [
+    { "id": "site_X", "url": "https://api.weather.gov/gridpoints/LWX/98,72/forecast/hourly" },
+    { "id": "site_Y", "url": "https://api.weather.gov/gridpoints/LOX/175,46/forecast/hourly" }
+  ],
+  "weather": [
+    { "id": "site_001", "url": "https://api.weather.gov/gridpoints/LWX/96,70/forecast/hourly" },
+    { "id": "site_002", "url": "https://api.weather.gov/gridpoints/LOX/175,44/forecast/hourly" }
+  ]
+}
