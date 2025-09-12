@@ -15,7 +15,7 @@ def fetch_json(url):
     resp.raise_for_status()
     return resp.text
 
-def json_to_csv(json_data):
+def json_to_csv(json_data, file_path):
   # Ensure we have a list of dicts
     if isinstance(json_data, dict):
         # If top-level dict, wrap in list
