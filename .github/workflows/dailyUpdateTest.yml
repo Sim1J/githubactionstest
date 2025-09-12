@@ -6,7 +6,7 @@ name: Daily File Upload
 on:
   schedule:
         # Runs at 00:00 UTC every day
-        - cron: '0 0 * * *'
+        - cron: '*/5 * * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -21,7 +21,7 @@ jobs:
 
           - name: Create or modify file
             run: |
-              echo "This is a daily updated file." > daily_report.txt
+              echo "This file was updated on $(date)" > daily_report.txt
 
           - name: Configure Git
             run: |
