@@ -14,18 +14,6 @@ def fetch_json(url):
     resp = requests.get(url)
     resp.raise_for_status()
     return resp.text
-
-def json_to_csv(json_data, file_path):
-  # Ensure we have a list of dicts
-    if isinstance(json_data, dict):
-        # If top-level dict, wrap in list
-        json_data = [json_data]
-
-    keys = sorted(json_data[0].keys())
-    with open(file_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=keys)
-        writer.writeheader()
-        writer.writerows(json_data)
     
 
 def save_csv(content, category, site_id, base_dir="data"):
@@ -42,8 +30,9 @@ def save_csv(content, category, site_id, base_dir="data"):
     else:
         print(f" Folder already exists: {folder_path}")
 
-    file_path = os.path.join(folder_path, f"{day}.csv")
-    json_to_csv(content, file_path)
+    file_path = os.path.join(folder_path, f"{day}.json")
+    with open(file_path, "w", newline="", encoding="utf-8") as f:
+        json.dump(content, f, indent=2)
 
     print(f" Saved {category}/{site_id} → {file_path}")
 
