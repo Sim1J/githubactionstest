@@ -2,8 +2,8 @@ name: Fetch Daily Data
 
 on:
   schedule:
-    - cron: "0 2 * * *"   # run daily at 2:00 UTC
-  workflow_dispatch:       # allows manual trigger
+    - cron: "0 2 * * *"
+  workflow_dispatch:
 
 jobs:
   fetch-data:
