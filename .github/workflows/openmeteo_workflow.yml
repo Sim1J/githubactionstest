@@ -26,6 +26,7 @@ jobs:
           pip install numpy
           pip install pandas
           pip install requests_cache
+          pip install retry_requests 
 
       - name: Run fetch script
         run: |
