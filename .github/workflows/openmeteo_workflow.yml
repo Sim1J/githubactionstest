@@ -1,4 +1,4 @@
-name: Fetch Daily Data
+name: OpenMeteo Data
 
 on:
   schedule:
