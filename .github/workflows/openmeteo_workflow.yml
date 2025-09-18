@@ -23,6 +23,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
           pip install openmeteo-requests
+          pip install numpy
+          pip install pandas
+          pip install requests_cache
 
       - name: Run fetch script
         run: |
