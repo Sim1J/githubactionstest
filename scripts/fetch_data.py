@@ -34,7 +34,7 @@ def save_csv(content, category, site_id, base_dir="data"):
     with open(file_path, "w", newline="", encoding="utf-8") as f:
         json.dump(content, f, indent=2)
 
-    print(f" Saved {category}/{site_id} → {file_path}")
+    print(f" Saved {category}/{site_id} to {file_path}")
 
 def main():
     config = load_config()
@@ -45,7 +45,7 @@ def main():
             site_id = site["id"]
             url = site["url"]
             try:
-                print(f"↳ Fetching {category}/{site_id} from {url}")
+                print(f"Fetching {category}/{site_id} from {url}")
                 json_data = fetch_json(url)
                 save_csv(json_data, category, site_id)
             except Exception as e:
