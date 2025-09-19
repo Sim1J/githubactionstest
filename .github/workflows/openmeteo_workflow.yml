@@ -36,7 +36,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull
+          git fetch origin
+          git pull origin main
           git add locations/
           git commit -m "Add daily data for $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
-          git push -f origin master
+          git push origin main
