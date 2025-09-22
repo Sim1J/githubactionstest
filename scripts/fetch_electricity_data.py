@@ -11,6 +11,7 @@ today_date = today.strftime("%Y-%m-%d")
 eight_days_date = (today + timedelta(days=8)).strftime("%Y-%m-%d")
 
 client = GridStatusClient("debfe9375e344278b9772738158a53fb")
+QUERY_LIMIT = 10_000
 
 for iso_name, api_name in iso_dict.items():
   base_dir = "data"
