@@ -13,8 +13,6 @@ eight_days_date = (today + timedelta(days=8)).strftime("%Y-%m-%d")
 client = GridStatusClient("debfe9375e344278b9772738158a53fb")
 
 for iso_name, api_name in iso_dict.items():
-  print(iso_name)
-  print(api_name) 
   base_dir = "data"
   category = "electricity"
 
@@ -26,7 +24,7 @@ for iso_name, api_name in iso_dict.items():
 
   iso_df = client.get_dataset(
   dataset=api_name,
-  start=formatted_date,
+  start=eight_days_date,
   end=three_days_date,
   publish_time="latest",
   timezone="market",
