@@ -39,5 +39,5 @@ jobs:
           git fetch origin
           git pull origin main
           git add locations/
-          git commit -m "Add daily data for $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
+          git commit -m "Add weather data for $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
           git push origin main
