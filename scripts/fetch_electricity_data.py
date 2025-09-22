@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from gridstatusio import GridStatusClient
 import os
 import pandas as pd
 
