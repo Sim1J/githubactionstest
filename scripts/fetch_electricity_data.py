@@ -24,8 +24,8 @@ for iso_name, api_name in iso_dict.items():
 
   iso_df = client.get_dataset(
   dataset=api_name,
-  start=eight_days_date,
-  end=three_days_date,
+  start=today_date,
+  end=eight_days_date,
   publish_time="latest",
   timezone="market",
   limit=QUERY_LIMIT
