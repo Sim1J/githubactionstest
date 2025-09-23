@@ -23,6 +23,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install gridstatusio
           pip install pandas
+          pip install zipfile36
+          pip install python-io
+          pip install requests
 
       - name: Run fetch script
         run: |
