@@ -27,32 +27,31 @@ for iso_name, api_name in iso_dict.items():
           "queryname=SLD_FCST&market_run_id=7DA&"
           f"startdatetime={today.strftime('%Y%m%dT00:00-0000')}&enddatetime={(today + timedelta(days=7)).strftime('%Y%m%dT00:00-0000')}&version=1"
       )
+    resp = requests.get(url)
+    resp.raise_for_status()
+    with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
+      xml_file_name = z.namelist()[0]
+      with z.open(xml_file_name) as f:
+        xml_data = f.read()
 
-      resp = requests.get(url)
-      resp.raise_for_status()
-      with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
-        xml_file_name = z.namelist()[0]
-        with z.open(xml_file_name) as f:
-            xml_data = f.read()
+    root = ET.fromstring(xml_data)
+    namespace = {'o': 'http://www.caiso.com/soa/OASISReport_v1.xsd'}
 
-      root = ET.fromstring(xml_data)
-      namespace = {'o': 'http://www.caiso.com/soa/OASISReport_v1.xsd'}
+    records = []
+    for rpt in root.findall('.//o:REPORT_DATA', namespace):
+        row = {}
+        for item in rpt.findall('.//o:DATA_ITEM', namespace):
+            row[item.get('name')] = item.get('value')
+        for child in rpt:
+            if child.tag.replace(f'{{{namespace["o"]}}}', '') in ['INTERVAL_NUM', 'OPR_DT', 'VALUE']:
+                row[child.tag.replace(f'{{{namespace["o"]}}}', '')] = child.text
+        records.append(row)
 
-      records = []
-      for rpt in root.findall('.//o:REPORT_DATA', namespace):
-          row = {}
-          for item in rpt.findall('.//o:DATA_ITEM', namespace):
-              row[item.get('name')] = item.get('value')
-          for child in rpt:
-              if child.tag.replace(f'{{{namespace["o"]}}}', '') in ['INTERVAL_NUM', 'OPR_DT', 'VALUE']:
-                  row[child.tag.replace(f'{{{namespace["o"]}}}', '')] = child.text
-          records.append(row)
-
-      iso_df = pd.DataFrame(records)
-      folder_path = os.path.join(base_dir, category, iso_name, year)
-      os.makedirs(folder_path, exist_ok=True)
-      file_path = os.path.join(folder_path, "load_forecast.csv")
-      iso_df.to_csv(file_path, index=False)
+        iso_df = pd.DataFrame(records)
+        folder_path = os.path.join(base_dir, category, iso_name, year)
+        os.makedirs(folder_path, exist_ok=True)
+        file_path = os.path.join(folder_path, "load_forecast.csv")
+        iso_df.to_csv(file_path, index=False)
   else:
     if(iso_name == "ERCOT_Weather" or iso_name == "ERCOT_Zone"):
         folder_path = os.path.join(base_dir, category, "ERCOT", year, iso_name)
