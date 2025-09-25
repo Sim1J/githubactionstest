@@ -30,7 +30,7 @@ for iso_name, api_name in iso_dict.items():
     url = (
     "http://oasis.caiso.com/oasisapi/SingleZip?"
     "queryname=SLD_FCST&market_run_id=7DA&"
-    f"startdatetime={start_date}&enddatetime={end_date}&version=1"
+    f"startdatetime={today_date}&enddatetime={eight_days_date}&version=1"
     )
 
     resp = requests.get(url)
