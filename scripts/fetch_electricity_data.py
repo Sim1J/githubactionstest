@@ -6,6 +6,7 @@ import zipfile
 import io
 import xml.etree.ElementTree as ET
 import requests
+import time
 
 iso_dict = {"NE": "isone_reliability_region_load_forecast", "NY": "nyiso_zonal_load_forecast_hourly", "MISO":"miso_load_forecast_mid_term", "ERCOT_Zone":"ercot_load_forecast_by_forecast_zone", "ERCOT_Weather": "ercot_load_forecast_by_weather_zone", "SPP":"spp_load_forecast_mid_term", "PJM" : "pjm_load_forecast_hourly", "CAISO":"CAISO"}
 
@@ -14,10 +15,14 @@ year = today.strftime("%Y")
 today_date = today.strftime("%Y-%m-%d")
 eight_days_date = (today + timedelta(days=8)).strftime("%Y-%m-%d")
 
-client = GridStatusClient("debfe9375e344278b9772738158a53fb")
+today_date_caiso = today.strftime("%Y%m%d")
+seven_days_date_caiso = (today + timedelta(days=7)).strftime("%Y%m%d")
+
+client = GridStatusClient("28a896bb48f747b388a830b9922cf065")
 QUERY_LIMIT = 10_000
 
 for iso_name, api_name in iso_dict.items():
+  time.sleep(2)
   base_dir = "final data?"
   category = "electricity"
 
@@ -28,9 +33,7 @@ for iso_name, api_name in iso_dict.items():
   os.makedirs(folder_path, exist_ok=True)
   if(iso_name == "CAISO"):
     url = (
-    "http://oasis.caiso.com/oasisapi/SingleZip?"
-    "queryname=SLD_FCST&market_run_id=7DA&"
-    f"startdatetime={today_date}&enddatetime={eight_days_date}&version=1"
+    f"http://oasis.caiso.com/oasisapi/SingleZip?queryname=SLD_FCST&market_run_id=7DA&startdatetime={today_date_caiso}T00:00-0000&enddatetime={seven_days_date_caiso}T00:00-0000&version=1"
     )
 
     resp = requests.get(url)
