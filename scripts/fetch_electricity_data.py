@@ -23,7 +23,7 @@ QUERY_LIMIT = 10_000
 
 for iso_name, api_name in iso_dict.items():
   time.sleep(2)
-  base_dir = "final data?"
+  base_dir = "data"
   category = "electricity"
 
   if(iso_name == "ERCOT_Weather" or iso_name == "ERCOT_Zone"):
