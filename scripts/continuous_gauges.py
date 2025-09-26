@@ -1,0 +1,51 @@
+import requests
+import csv
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+GAUGES_URL = "https://api.water.noaa.gov/nwps/v1/gauges"
+METADATA_URL_TEMPLATE = "https://api.water.noaa.gov/nwps/v1/gauges/{}"
+MAX_WORKERS = 50
+OUTPUT_CSV = "continuous_forecast_gauges.csv"
+
+# fetch all gauges
+try:
+    response = requests.get(GAUGES_URL)
+    response.raise_for_status()
+except requests.exceptions.RequestException as e:
+    raise RuntimeError(f"Failed to fetch gauges: {e}")
+
+all_gauges_list = response.json().get("gauges", [])
+print(f"Total gauges returned: {len(all_gauges_list)}")
+
+# fetch metadata
+def fetch_metadata(gauge):
+    lid = gauge.get("lid")
+    if not lid:
+        return None
+    try:
+        metadata_resp = requests.get(METADATA_URL_TEMPLATE.format(lid), timeout=10)
+        metadata_resp.raise_for_status()
+        metadata = metadata_resp.json()
+        if "issued routinely" in metadata.get("forecastReliability", "").lower():
+            return metadata
+    except requests.exceptions.RequestException:
+        return None
+
+continuous_forecast_gauges = []
+with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    futures = [executor.submit(fetch_metadata, g) for g in all_gauges_list]
+    for future in as_completed(futures):
+        result = future.result()
+        if result:
+            continuous_forecast_gauges.append(result)
+
+print(f"\nTotal gauges with continuous forecasts: {len(continuous_forecast_gauges)}")
+
+# write results to csv
+with open(OUTPUT_CSV, mode="w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(["lid"])
+    for gauge in continuous_forecast_gauges:
+        writer.writerow([gauge.get("lid")])
+
+print(f"CSV written to: {OUTPUT_CSV}")
