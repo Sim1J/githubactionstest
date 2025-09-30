@@ -1,5 +1,6 @@
 import requests
 import csv
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 GAUGES_URL = "https://api.water.noaa.gov/nwps/v1/gauges"
