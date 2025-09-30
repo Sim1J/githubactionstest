@@ -5,7 +5,15 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 GAUGES_URL = "https://api.water.noaa.gov/nwps/v1/gauges"
 METADATA_URL_TEMPLATE = "https://api.water.noaa.gov/nwps/v1/gauges/{}"
 MAX_WORKERS = 50
-OUTPUT_CSV = "continuous_forecast_gauges.csv"
+
+
+BASE_DIR = "data"
+folder_path = os.path.join(BASE_DIR, "water")
+os.makedirs(folder_path, exist_ok=True)
+
+OUTPUT_CSV = os.path.join(folder_path, "continuous_forecast_gauges.csv")
+
+#OUTPUT_CSV = "continuous_forecast_gauges.csv"
 
 # fetch all gauges
 try:
