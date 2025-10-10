@@ -26,6 +26,7 @@ jobs:
       - name: Run fetch script
         run: |
           python scripts/continuous_gauges.py
+          python scripts/all_gauges.py
 
       - name: Commit & push results
         run: |
