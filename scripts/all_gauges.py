@@ -1,50 +1,104 @@
 import requests
 import csv
-import os
 from pathlib import Path
+from datetime import datetime, timezone
+import math
 
-# Path setup
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR.parent / "data" / "water"
+# --- Path setup (script in scripts/, data in data/water/) ---
+BASE_DIR = Path(__file__).resolve().parent           # scripts/
+DATA_DIR = BASE_DIR.parent / "data" / "water"        # data/water/
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-# All gauges with continuous forecasting
 GAUGE_LIST_FILE = DATA_DIR / "continuous_forecast_gauges.csv"
+MAX_HOURS = 168  # 7 days
 
-# Read gauge IDs from CSV
+def parse_utc(ts_str):
+    if ts_str is None:
+        return None
+    try:
+        if ts_str.endswith("Z"):
+            return datetime.strptime(ts_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        return datetime.fromisoformat(ts_str).astimezone(timezone.utc)
+    except Exception:
+        return None
+
+def to_float_or_nan(x):
+    try:
+        v = float(x)
+        if math.isfinite(v):
+            return v
+        return float("nan")
+    except Exception:
+        return float("nan")
+
 gauge_ids = []
 with open(GAUGE_LIST_FILE, newline="") as f:
     reader = csv.DictReader(f)
     for row in reader:
-        gauge_ids.append(row["lid"].strip())
+        lid = row.get("lid")
+        if lid:
+            gauge_ids.append(lid.strip())
 
 print(f"Found {len(gauge_ids)} gauges to process.\n")
 
 for GAUGE_ID in gauge_ids:
     url = f"https://api.water.noaa.gov/nwps/v1/gauges/{GAUGE_ID}/stageflow/forecast"
-    print(f"Fetching forecast for {GAUGE_ID}...")
-
     try:
-        response = requests.get(url, timeout=20)
-        response.raise_for_status()
-        forecast_data = response.json()
+        resp = requests.get(url, timeout=20)
+        resp.raise_for_status()
+        forecast_data = resp.json()
     except requests.exceptions.RequestException as e:
         continue
 
     data_points = forecast_data.get("data", [])
     if not data_points:
+        print(f"No forecast data for {GAUGE_ID}")
         continue
 
-    # Extract times and values
-    generated_time = data_points[0]["generatedTime"]
-    valid_times = [p["validTime"] for p in data_points]
-    secondary_values = [p["secondary"] for p in data_points]
+    # Parse all validTimes and build list of (valid_dt, secondary)
+    parsed = []
+    for p in data_points:
+        vt = parse_utc(p.get("validTime"))
+        val = to_float_or_nan(p.get("secondary"))
+        if vt is None:
+            continue
+        parsed.append((vt, val))
 
-    header = ["forecast_day", "time_of_1h"] + [f"{i+1}h" for i in range(len(valid_times))]
-    row = [generated_time, valid_times[0]] + secondary_values
+    if not parsed:
+        continue
 
-    # Save CSV in ../data/water/
+    parsed.sort(key=lambda x: x[0])
+    time_of_1h_dt = parsed[0][0]
+    time_of_1h = time_of_1h_dt.isoformat().replace("+00:00", "Z")
+
+    slots = [float("nan")] * MAX_HOURS
+
+    for vt, val in parsed:
+        delta_hours = round((vt - time_of_1h_dt).total_seconds() / 3600)
+        if delta_hours < 0:
+            continue
+        if delta_hours >= MAX_HOURS:
+            # truncate beyond 168 hours
+            continue
+        slots[delta_hours] = val
+
+    non_nan_vals = [v for v in slots if not math.isnan(v)]
+    if non_nan_vals and all(v == 0.0 or v == -999.0 for v in non_nan_vals):
+        slots = [float("nan")] * MAX_HOURS
+
+    # Convert NaNs to the string "NaN" for CSV readability
+    csv_values = [("NaN" if math.isnan(v) else v) for v in slots]
+
+    issued = forecast_data.get("issuedTime") or forecast_data.get("generatedTime")
+    if not issued:
+        issued = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+    header = ["forecast_day", "time_of_1h"] + [f"{i+1}h" for i in range(MAX_HOURS)]
+    row = [issued, time_of_1h] + csv_values
+
     csv_file = DATA_DIR / f"{GAUGE_ID}_forecast.csv"
+
+    # Overwrite for now
     with open(csv_file, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)
