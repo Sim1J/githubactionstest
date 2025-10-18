@@ -28,6 +28,8 @@ jobs:
           pip install requests
 
       - name: Run fetch script
+        env: 
+          ELECTRICITY_API_KEY: ${{ secrets.ELECTRICITY_API_KEY }}
         run: |
           python scripts/fetch_electricity_data.py
 
