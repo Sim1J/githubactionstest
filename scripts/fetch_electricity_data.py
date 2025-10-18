@@ -8,6 +8,8 @@ import xml.etree.ElementTree as ET
 import requests
 import time
 
+ELECTRICITY_API_KEY = os.getenv('ELECTRICITY_API_KEY')
+
 iso_dict = {"NE": "isone_reliability_region_load_forecast", "NY": "nyiso_zonal_load_forecast_hourly", "MISO":"miso_load_forecast_mid_term", "ERCOT_Zone":"ercot_load_forecast_by_forecast_zone", "ERCOT_Weather": "ercot_load_forecast_by_weather_zone", "SPP":"spp_load_forecast_mid_term", "PJM" : "pjm_load_forecast_hourly", "CAISO":"CAISO"}
 
 today = date.today()
@@ -18,7 +20,7 @@ eight_days_date = (today + timedelta(days=8)).strftime("%Y-%m-%d")
 today_date_caiso = today.strftime("%Y%m%d")
 seven_days_date_caiso = (today + timedelta(days=7)).strftime("%Y%m%d")
 
-client = GridStatusClient("28a896bb48f747b388a830b9922cf065")
+client = GridStatusClient(ELECTRICITY_API_KEY)
 QUERY_LIMIT = 10_000
 
 for iso_name, api_name in iso_dict.items():
