@@ -7,14 +7,11 @@ GAUGES_URL = "https://api.water.noaa.gov/nwps/v1/gauges"
 METADATA_URL_TEMPLATE = "https://api.water.noaa.gov/nwps/v1/gauges/{}"
 MAX_WORKERS = 50
 
-
 BASE_DIR = "data"
 folder_path = os.path.join(BASE_DIR, "water")
 os.makedirs(folder_path, exist_ok=True)
 
 OUTPUT_CSV = os.path.join(folder_path, "continuous_forecast_gauges.csv")
-
-#OUTPUT_CSV = "continuous_forecast_gauges.csv"
 
 # fetch all gauges
 try:
@@ -36,7 +33,13 @@ def fetch_metadata(gauge):
         metadata_resp.raise_for_status()
         metadata = metadata_resp.json()
         if "issued routinely" in metadata.get("forecastReliability", "").lower():
-            return metadata
+            state_info = metadata.get("state", {})
+            return {
+                "lid": metadata.get("lid"),
+                "state_id": state_info.get("abbreviation"),
+                "lat": metadata.get("latitude"),
+                "lng": metadata.get("longitude"),
+            }
     except requests.exceptions.RequestException:
         return None
 
@@ -52,9 +55,8 @@ print(f"\nTotal gauges with continuous forecasts: {len(continuous_forecast_gauge
 
 # write results to csv
 with open(OUTPUT_CSV, mode="w", newline="") as file:
-    writer = csv.writer(file)
-    writer.writerow(["lid"])
-    for gauge in continuous_forecast_gauges:
-        writer.writerow([gauge.get("lid")])
+    writer = csv.DictWriter(file, fieldnames=["lid", "state_id", "lat", "lng"])
+    writer.writeheader()
+    writer.writerows(continuous_forecast_gauges)
 
 print(f"CSV written to: {OUTPUT_CSV}")
