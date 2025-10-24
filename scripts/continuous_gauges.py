@@ -34,12 +34,20 @@ def fetch_metadata(gauge):
         metadata = metadata_resp.json()
         if "issued routinely" in metadata.get("forecastReliability", "").lower():
             state_info = metadata.get("state", {})
+            lat = metadata.get("latitude")
+            lng = metadata.get("longitude")
+            
+            # skip if coordinates are invalid (1,1 or None)
+            if not lat or not lng or (abs(lat - 1.0) < 1e-6 and abs(lng - 1.0) < 1e-6):
+                return None
+                
             return {
                 "lid": metadata.get("lid"),
                 "state_id": state_info.get("abbreviation"),
-                "lat": metadata.get("latitude"),
-                "lng": metadata.get("longitude"),
+                "lat": lat,
+                "lng": lng,
             }
+
     except requests.exceptions.RequestException:
         return None
 
