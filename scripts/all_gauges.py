@@ -31,18 +31,38 @@ def to_float_or_nan(x):
     except Exception:
         return float("nan")
 
-gauge_ids = []
+# load gauges and their states
+gauges = []
 with open(GAUGE_LIST_FILE, newline="") as f:
     reader = csv.DictReader(f)
     for row in reader:
         lid = row.get("lid")
+        state = row.get("state_id") or "Unknown"
         if lid:
-            gauge_ids.append(lid.strip())
+            gauges.append({"lid": lid.strip(), "state": state.strip()})
 
-print(f"Found {len(gauge_ids)} gauges to process.\n")
+for gauge in gauges:
+    GAUGE_ID = gauge["lid"]
+    STATE = gauge["state"]
 
-for GAUGE_ID in gauge_ids:
+    # create state-specific directory
+    state_dir = DATA_DIR / STATE
+    state_dir.mkdir(parents=True, exist_ok=True)
     url = f"https://api.water.noaa.gov/nwps/v1/gauges/{GAUGE_ID}/stageflow/forecast"
+
+    try:
+        resp = requests.get(url, timeout=20)
+        resp.raise_for_status()
+        forecast_data = resp.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to fetch {GAUGE_ID}: {e}")
+        continue
+
+    data_points = forecast_data.get("data", [])
+    if not data_points:
+        print(f"No forecast data for {GAUGE_ID}")
+        continue
+
     try:
         resp = requests.get(url, timeout=20)
         resp.raise_for_status()
@@ -72,15 +92,10 @@ for GAUGE_ID in gauge_ids:
     time_of_1h = time_of_1h_dt.isoformat().replace("+00:00", "Z")
 
     slots = [float("nan")] * MAX_HOURS
-
     for vt, val in parsed:
-        delta_hours = round((vt - time_of_1h_dt).total_seconds() / 3600)
-        if delta_hours < 0:
-            continue
-        if delta_hours >= MAX_HOURS:
-            # truncate beyond 168 hours
-            continue
-        slots[delta_hours] = val
+        delta_hours = int((vt - time_of_1h_dt).total_seconds() / 3600)
+        if 0 <= delta_hours < MAX_HOURS:
+            slots[delta_hours] = val
 
     non_nan_vals = [v for v in slots if not math.isnan(v)]
     if non_nan_vals and all(v == 0.0 or v == -999.0 for v in non_nan_vals):
@@ -96,10 +111,11 @@ for GAUGE_ID in gauge_ids:
     header = ["forecast_day", "time_of_1h"] + [f"{i+1}h" for i in range(MAX_HOURS)]
     row = [issued, time_of_1h] + csv_values
 
-    csv_file = DATA_DIR / f"{GAUGE_ID}_forecast.csv"
+    csv_file = state_dir / f"{GAUGE_ID}_forecast.csv"
 
     # Overwrite for now
     with open(csv_file, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)
         writer.writerow(row)
+
