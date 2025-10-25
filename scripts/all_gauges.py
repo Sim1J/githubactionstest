@@ -63,18 +63,6 @@ for gauge in gauges:
         print(f"No forecast data for {GAUGE_ID}")
         continue
 
-    try:
-        resp = requests.get(url, timeout=20)
-        resp.raise_for_status()
-        forecast_data = resp.json()
-    except requests.exceptions.RequestException as e:
-        continue
-
-    data_points = forecast_data.get("data", [])
-    if not data_points:
-        print(f"No forecast data for {GAUGE_ID}")
-        continue
-
     # Parse all validTimes and build list of (valid_dt, secondary)
     parsed = []
     for p in data_points:
