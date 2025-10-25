@@ -101,9 +101,11 @@ for gauge in gauges:
 
     csv_file = state_dir / f"{GAUGE_ID}_forecast.csv"
 
-    # Overwrite for now
-    with open(csv_file, "w", newline="") as f:
+    # append row
+    write_header = not csv_file.exists()
+    with open(csv_file, "a", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(header)
+        if write_header:
+            writer.writerow(header)
         writer.writerow(row)
 
