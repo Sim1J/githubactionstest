@@ -7,7 +7,7 @@ GAUGES_URL = "https://api.water.noaa.gov/nwps/v1/gauges"
 METADATA_URL_TEMPLATE = "https://api.water.noaa.gov/nwps/v1/gauges/{}"
 MAX_WORKERS = 50
 
-BASE_DIR = "data"
+BASE_DIR = "githubactionstest"
 folder_path = os.path.join(BASE_DIR, "map")
 os.makedirs(folder_path, exist_ok=True)
 
