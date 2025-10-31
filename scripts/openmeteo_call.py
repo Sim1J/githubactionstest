@@ -174,5 +174,6 @@ def city_call(url, citycsv, top_folder = 'data/weather'):
     print("Daily forecast data retrieved")
 
 
-city_call(url, 'county_weighted_city_with_hydro_final.csv')
+city_call(url, 'scripts/county_weighted_city_with_hydro_final.csv')
+
 
