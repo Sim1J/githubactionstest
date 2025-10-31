@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent           # scripts/
 DATA_DIR = BASE_DIR.parent / "data" / "water"        # data/water/
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-GAUGE_LIST_FILE = DATA_DIR / "continuous_forecast_gauges.csv"
+GAUGE_LIST_FILE = BASE_DIR / "continuous_forecast_gauges.csv"
 MAX_HOURS = 168  # 7 days
 
 def parse_utc(ts_str):
