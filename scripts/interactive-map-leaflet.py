@@ -4,7 +4,7 @@ import gzip
 import base64
 
 # Load cities
-cities_df = pd.read_csv('county_weighted_city_with_hydro_final.csv', encoding='utf-8')
+cities_df = pd.read_csv('scripts/county_weighted_city_with_hydro_final.csv', encoding='utf-8')
 cities = []
 for idx, row in cities_df.iterrows():
     cities.append({
@@ -18,7 +18,7 @@ for idx, row in cities_df.iterrows():
 cities_json = json.dumps(cities)
 
 # Load gauges
-gauges_df = pd.read_csv('continuous_forecast_gauges.csv', encoding='utf-8')
+gauges_df = pd.read_csv('scripts/continuous_forecast_gauges.csv', encoding='utf-8')
 gauges = []
 for idx, row in gauges_df.iterrows():
     gauges.append({
@@ -30,14 +30,14 @@ for idx, row in gauges_df.iterrows():
 gauges_json = json.dumps(gauges)
 
 # Load and compress koppen
-with open('koppen_grid.json', 'r', encoding='utf-8') as f:
+with open('scripts/koppen_grid.json', 'r', encoding='utf-8') as f:
     koppen_str = f.read()
 
 compressed = gzip.compress(koppen_str.encode('utf-8'))
 koppen_encoded = base64.b64encode(compressed).decode('ascii')
 
 # Read template
-with open('map-template-leaflet.html', 'r', encoding='utf-8') as f:
+with open('scripts/map-template-leaflet.html', 'r', encoding='utf-8') as f:
     template = f.read()
 
 # Substitute data
