@@ -8,7 +8,7 @@ METADATA_URL_TEMPLATE = "https://api.water.noaa.gov/nwps/v1/gauges/{}"
 MAX_WORKERS = 50
 
 BASE_DIR = "data"
-folder_path = os.path.join(BASE_DIR, "water")
+folder_path = os.path.join(BASE_DIR, "map")
 os.makedirs(folder_path, exist_ok=True)
 
 OUTPUT_CSV = os.path.join(folder_path, "continuous_forecast_gauges.csv")
