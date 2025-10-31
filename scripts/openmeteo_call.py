@@ -15,9 +15,9 @@ retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
 openmeteo = openmeteo_requests.Client(session = retry_session)
 url = "https://api.open-meteo.com/v1/forecast"
 
+os.makedirs('data/weather', exist_ok=True)
 
-
-def openmeteo_7_day_call(url, lat, lon, cityname = '', statename = '', block_csv = True, top_folder = 'locations'):
+def openmeteo_7_day_call(url, lat, lon, cityname = '', statename = '', block_csv = True, top_folder = 'data/weather'):
     """
     requests 7DA weather data from OpenMeteo and writes to csv.
     url: located below, meant to be OpenMeteo forecast api url
@@ -158,7 +158,7 @@ def full_grid_call(url, n, block_csv = True, top_folder = 'locations'):
 
 #full_grid_call(url, 5, False) #testing with a 5x5 grid!
 
-def city_call(url, citycsv, top_folder = 'locations'):
+def city_call(url, citycsv, top_folder = 'data/weather'):
     city_df = pd.read_csv(citycsv)
 
     for i in range(0, len(city_df)):
@@ -175,3 +175,4 @@ def city_call(url, citycsv, top_folder = 'locations'):
 
 
 city_call(url, 'county_weighted_city_with_hydro_final.csv')
+
