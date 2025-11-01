@@ -123,9 +123,11 @@ def openmeteo_7_day_call(url, lat, lon, cityname = '', statename = '', block_csv
 
             if os.path.exists(csv_file):
                 # Append without writing header
+                os.makedirs(os.path.dirname(csv_file), exist_ok=True)
                 pd.DataFrame([row]).to_csv(csv_file, mode="a", header=False, index=False)
             else:
                 # Create new file with header row
+                os.makedirs(os.path.dirname(csv_file), exist_ok=True)
                 header = ["forecast_day", "time_of_1h"] + [f"{h}h" for h in range(1, len(values)+1)]
                 pd.DataFrame([row], columns=header).to_csv(csv_file, index=False)
 
@@ -175,5 +177,6 @@ def city_call(url, citycsv, top_folder = 'data/weather'):
 
 
 city_call(url, 'scripts/county_weighted_city_with_hydro_final.csv')
+
 
 
