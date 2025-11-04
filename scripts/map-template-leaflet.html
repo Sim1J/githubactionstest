@@ -160,6 +160,7 @@
                     lon: city.lon,
                     koppen: city.koppen,
                     url: city.url,
+                    url1: city.url1
                     distance: haversineDistance(lat, lon, city.lat, city.lon),
                     match: city.koppen === koppen
                 };
@@ -202,6 +203,7 @@
                 content += '&nbsp;&nbsp;&nbsp;' + '<b>' + city.name + '</b><br>';
                 content += '&nbsp;&nbsp;&nbsp;' + city.distance.toFixed(1) + ' miles' + note + '<br>';
                 content += '&nbsp;&nbsp;&nbsp;<a href="' + city.url + '" target="_blank">View Data</a><br><br>';
+                content += '&nbsp;&nbsp;&nbsp;<a href="' + city.url1 + '" target="_blank">View Data</a><br><br>';
             });
             
             content += '</div>';
