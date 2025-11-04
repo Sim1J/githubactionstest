@@ -38,7 +38,7 @@ def openmeteo_7_day_call(url, lat, lon, cityname = '', statename = '', block_csv
     params = {
         "latitude": lat,
         "longitude": lon,
-        "hourly": ["temperature_2m", "wind_speed_10m", "relative_humidity_2m", "dew_point_2m", "precipitation_probability", "precipitation", "surface_pressure", "cloud_cover", "wind_direction_10m", "evapotranspiration", "shortwave_radiation"]
+        "hourly": ["temperature_2m", "wind_speed_10m", "relative_humidity_2m", "dew_point_2m", "precipitation_probability", "precipitation", "surface_pressure", "cloud_cover", "wind_direction_10m", "shortwave_radiation"]
     }
     responses = openmeteo.weather_api(url, params=params)
 
@@ -56,8 +56,7 @@ def openmeteo_7_day_call(url, lat, lon, cityname = '', statename = '', block_csv
     hourly_surface_pressure = hourly.Variables(6).ValuesAsNumpy()
     hourly_cloud_cover = hourly.Variables(7).ValuesAsNumpy()
     hourly_wind_direction_10m = hourly.Variables(8).ValuesAsNumpy()
-    hourly_evapotranspiration = hourly.Variables(9).ValuesAsNumpy()
-    hourly_shortwave_radiation = hourly.Variables(10).ValuesAsNumpy()
+    hourly_shortwave_radiation = hourly.Variables(9).ValuesAsNumpy()
 
     hourly_data = {"date": pd.date_range(
         start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
@@ -74,7 +73,6 @@ def openmeteo_7_day_call(url, lat, lon, cityname = '', statename = '', block_csv
     hourly_data["precipitation"] = hourly_precipitation
     hourly_data["surface_pressure"] = hourly_surface_pressure
     hourly_data["cloud_cover"] = hourly_cloud_cover
-    hourly_data["evapotranspiration"] = hourly_evapotranspiration
     hourly_data["shortwave_radiation"] = hourly_shortwave_radiation
     hourly_data["wind_direction_10m"] = hourly_wind_direction_10m
 
@@ -105,7 +103,6 @@ def openmeteo_7_day_call(url, lat, lon, cityname = '', statename = '', block_csv
             "precipitation": hourly_precipitation,
             "surface_pressure": hourly_surface_pressure,
             "cloud_cover": hourly_cloud_cover,
-            "evapotranspiration": hourly_evapotranspiration,
             "shortwave_radiation": hourly_shortwave_radiation,
             "wind_direction_10m": hourly_wind_direction_10m,
         }
@@ -177,6 +174,7 @@ def city_call(url, citycsv, top_folder = 'data/weather'):
 
 
 city_call(url, 'scripts/county_weighted_city_with_hydro_final.csv')
+
 
 
 
