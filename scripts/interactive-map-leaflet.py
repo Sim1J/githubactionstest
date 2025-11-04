@@ -12,7 +12,8 @@ for idx, row in cities_df.iterrows():
         "lat": row['lat'],
         "lon": row['lng'],
         "koppen": row['Koppen'],
-        "url": f"data/weather/{row['state_id']}/{row['city']}_{row['lat']}N_{row['lng']}W/"
+        "url": f"data/weather/{row['state_id']}/{row['city']}_{row['lat']}N_{row['lng']}W/",
+        "url1" : f"https://github.com/Sim1J/githubactionstest/tree/main/data/weather/{row['state_id']}/{row['city']}_{row['lat']}N_{row['lng']}W/"
     })
 
 cities_json = json.dumps(cities)
