@@ -80,7 +80,7 @@
                 fillColor: 'orange',
                 fillOpacity: 0.6,
                 weight: 1
-            }).bindPopup('<b>Gauge, State: ' + g.name + '<br><a href="' + g.url + '" target="_blank">View Data</a>')
+            }).bindPopup('<b>Gauge, State: ' + g.name +'<br><a href="' + g.data_url + '" target="_blank">View Dats</a>' +'<br><a href="' + g.url + '" target="_blank">View Gauge Info</a>')
             .addTo(gaugeLayer);
         });
         gaugeLayer.addTo(map);
@@ -159,7 +159,6 @@
                     lat: city.lat,
                     lon: city.lon,
                     koppen: city.koppen,
-                    url: city.url,
                     url1: city.url1,
                     distance: haversineDistance(lat, lon, city.lat, city.lon),
                     match: city.koppen === koppen
