@@ -1,11 +1,12 @@
 import requests
 import csv
 import os
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 GAUGES_URL = "https://api.water.noaa.gov/nwps/v1/gauges"
 METADATA_URL_TEMPLATE = "https://api.water.noaa.gov/nwps/v1/gauges/{}"
-MAX_WORKERS = 50
+MAX_WORKERS = 8
 
 BASE_DIR = "scripts"
 folder_path = os.path.join(BASE_DIR)
@@ -14,11 +15,18 @@ os.makedirs(folder_path, exist_ok=True)
 OUTPUT_CSV = os.path.join(folder_path, "continuous_forecast_gauges.csv")
 
 # fetch all gauges
-try:
-    response = requests.get(GAUGES_URL)
-    response.raise_for_status()
-except requests.exceptions.RequestException as e:
-    raise RuntimeError(f"Failed to fetch gauges: {e}")
+def fetch_with_retry(url, attempts=5, delay=5):
+    for i in range(attempts):
+        try:
+            r = requests.get(url, timeout=20)
+            r.raise_for_status()
+            return r
+        except requests.exceptions.RequestException as e:
+            print(f"Attempt {i+1} failed: {e}")
+            time.sleep(delay)
+    raise RuntimeError(f"Failed to fetch after {attempts} attempts: {url}")
+
+response = fetch_with_retry(GAUGES_URL)
 
 all_gauges_list = response.json().get("gauges", [])
 print(f"Total gauges returned: {len(all_gauges_list)}")
