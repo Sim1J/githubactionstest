@@ -26,7 +26,7 @@ for idx, row in gauges_df.iterrows():
         "name": f"{row['lid']}, {row['state_id']}",
         "lat": row['lat'],
         "lon": row['lng'],
-        "url": f"https://water.noaa.gov/gauges/{row['lid']}"
+        "url": f"https://water.noaa.gov/gauges/{row['lid']}",
         "data_url": f"https://github.com/Sim1J/githubactionstest/tree/main/data/water/{row['state_id']}/{row['lid']}_forecast.csv"
     })
 gauges_json = json.dumps(gauges)
