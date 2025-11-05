@@ -18,7 +18,7 @@ OUTPUT_CSV = os.path.join(folder_path, "continuous_forecast_gauges.csv")
 def fetch_with_retry(url, attempts=5, delay=5):
     for i in range(attempts):
         try:
-            r = requests.get(url, timeout=20)
+            r = requests.get(url, timeout=60)
             r.raise_for_status()
             return r
         except requests.exceptions.RequestException as e:
