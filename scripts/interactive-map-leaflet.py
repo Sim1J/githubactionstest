@@ -47,6 +47,6 @@ html = html.replace('GAUGES_DATA_PLACEHOLDER', gauges_json)
 html = html.replace('KOPPEN_COMPRESSED_PLACEHOLDER', koppen_encoded)
 
 # Save final HTML
-with open('interactive_city_map_leaflet3_search.html', 'w', encoding='utf-8') as f:
+with open('index.html', 'w', encoding='utf-8') as f:
     f.write(html)
 
