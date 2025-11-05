@@ -80,7 +80,7 @@
                 fillColor: 'orange',
                 fillOpacity: 0.6,
                 weight: 1
-            }).bindPopup('<b>Gauge, State: ' + g.name +'<br><a href="' + g.data_url + '" target="_blank">View Dats</a>' +'<br><a href="' + g.url + '" target="_blank">View Gauge Info</a>')
+            }).bindPopup('<b>Gauge, State: ' + g.name +'<br><a href="' + g.data_url + '" target="_blank">View Data</a>' +'<br><a href="' + g.url + '" target="_blank">View Gauge Info</a>')
             .addTo(gaugeLayer);
         });
         gaugeLayer.addTo(map);
@@ -201,7 +201,6 @@
                 
                 content += '&nbsp;&nbsp;&nbsp;' + '<b>' + city.name + '</b><br>';
                 content += '&nbsp;&nbsp;&nbsp;' + city.distance.toFixed(1) + ' miles' + note + '<br>';
-                content += '&nbsp;&nbsp;&nbsp;<a href="' + city.url + '" target="_blank">View Data</a><br><br>';
                 content += '&nbsp;&nbsp;&nbsp;<a href="' + city.url1 + '" target="_blank">View Data</a><br><br>';
             });
             
