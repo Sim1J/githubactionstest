@@ -64,8 +64,8 @@
                 color: 'blue',
                 fillColor: 'blue',
                 fillOpacity: 0.6,
-                weight: 1
-            }).bindPopup(city.name).addTo(cityLayer);
+                weight: 2
+            }).bindPopup('<b> City: ' + city.name +'<br><a href="' + city.url1 + '" target="_blank">View Data</a>').addTo(cityLayer);
         });
         
 
@@ -79,7 +79,7 @@
                 color: 'orange',
                 fillColor: 'orange',
                 fillOpacity: 0.6,
-                weight: 1
+                weight: 2
             }).bindPopup('<b>Gauge, State: ' + g.name +'<br><a href="' + g.data_url + '" target="_blank">View Data</a>' +'<br><a href="' + g.url + '" target="_blank">View Gauge Info</a>')
             .addTo(gaugeLayer);
         });
