@@ -16,6 +16,9 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/shpjs@latest/dist/shp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/calvinmetcalf/leaflet.shapefile@master/leaflet.shpfile.js"></script>
+
 
     <script src="https://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet.js"></script>
 
@@ -27,6 +30,7 @@
     <script>
         var cities = CITIES_DATA_PLACEHOLDER;
         var gauges = GAUGES_DATA_PLACEHOLDER;
+        // var zones = ZONES_DATA_PLACEHOLDER;
         var koppenGrid = null;
         
         //decompress koppen data
@@ -64,8 +68,8 @@
                 color: 'blue',
                 fillColor: 'blue',
                 fillOpacity: 0.6,
-                weight: 2
-            }).bindPopup('<b> City: ' + city.name +'<br><a href="' + city.url1 + '" target="_blank">View Data</a>').addTo(cityLayer);
+                weight: 1
+            }).bindPopup(city.name).addTo(cityLayer);
         });
         
 
@@ -79,11 +83,111 @@
                 color: 'orange',
                 fillColor: 'orange',
                 fillOpacity: 0.6,
-                weight: 2
-            }).bindPopup('<b>Gauge, State: ' + g.name +'<br><a href="' + g.data_url + '" target="_blank">View Data</a>' +'<br><a href="' + g.url + '" target="_blank">View Gauge Info</a>')
+                weight: 1
+            }).bindPopup('<b>Gauge, State: ' + g.name + '<br><a href="' + g.url + '" target="_blank">View Data</a>')
             .addTo(gaugeLayer);
         });
         gaugeLayer.addTo(map);
+
+        const zoneLink = "https://github.com/Sim1J/githubactionstest/tree/main/data/electricity/";
+
+        const zoneLinks = {
+            MISO: {
+                LRZ1: zoneLink + "MISO/2025/lrz1_mtlf.csv",
+                LRZ2: zoneLink + "MISO/2025/lrz2_7_mtlf.csv",
+                LRZ3: zoneLink + "MISO/2025/lrz3_5_mtlf.csv",
+                LRZ4: zoneLink + "MISO/2025/lrz4_mtlf.csv",
+                LRZ5: zoneLink + "MISO/2025/lrz3_5_mtlf.csv",
+                LRZ6: zoneLink + "MISO/2025/lrz6_mtlf.csv",
+                LRZ7: zoneLink + "MISO/2025/lrz2_7_mtlf.csv",
+                LRZ8: zoneLink + "MISO/2025/lrz8_9_10_mtlf.csv",
+                LRZ9: zoneLink + "MISO/2025/lrz8_9_10_mtlf.csv",
+                LRZ10: zoneLink + "MISO/2025/lrz8_9_10_mtlf.csv"
+            },
+            SPP: {
+                CSWS: zoneLink + "SPP/2025/mtlf.csv",
+                SPA: zoneLink + "SPP/2025/mtlf.csv",
+                EDE: zoneLink + "SPP/2025/mtlf.csv",
+                WFEC: zoneLink + "SPP/2025/mtlf.csv",
+                OKGE: zoneLink + "SPP/2025/mtlf.csv",
+                GRDA: zoneLink + "SPP/2025/mtlf.csv",
+                SECI: zoneLink + "SPP/2025/mtlf.csv",
+                WR: zoneLink + "SPP/2025/mtlf.csv",
+                KCPL: zoneLink + "SPP/2025/mtlf.csv",
+                MPS: zoneLink + "SPP/2025/mtlf.csv",
+                KACY: zoneLink + "SPP/2025/mtlf.csv",
+                INDN: zoneLink + "SPP/2025/mtlf.csv",
+                OPPD: zoneLink + "SPP/2025/mtlf.csv",
+                NPPD: zoneLink + "SPP/2025/mtlf.csv",
+                LES: zoneLink + "SPP/2025/mtlf.csv",
+                WAUE: zoneLink + "SPP/2025/mtlf.csv"
+            },
+            NYISO: {
+                A: zoneLink + "NY/2025/west.csv",
+                B: zoneLink + "NY/2025/genese.csv",
+                C: zoneLink + "NY/2025/centrl.csv",
+                D: zoneLink + "NY/2025/north.csv",
+                E: zoneLink + "NY/2025/mhk_vl.csv",
+                F: zoneLink + "NY/2025/capitl.csv",
+                G: zoneLink + "NY/2025/hud_vl.csv",
+                H: zoneLink + "NY/2025/millwd.csv",
+                I: zoneLink + "NY/2025/dunwod.csv",
+                J: zoneLink + "NY/2025/nyc.csv",
+                K: zoneLink + "NY/2025/longil.csv"
+            },
+            ISONE: {
+                Connecticut: zoneLink + "NE/2025/.Z.CONNECTICUT.csv",
+                Maine: zoneLink + "NE/2025/.Z.MAINE.csv",
+                //New Hampshire: "NE/2025/.Z.NEWHAMPSHIRE.csv",
+                //Rhode Island: "NE/2025/.Z.CONNECTICUT.csv",
+                Vermont: zoneLink + "NE/2025/.Z.CONNECTICUT.csv",
+                Connecticut: zoneLink + "NE/2025/.Z.CONNECTICUT.csv",
+                Connecticut: zoneLink + "NE/2025/.Z.CONNECTICUT.csv"
+            },
+            // PJM: {
+            //     central: "https://your.github.io/data/electricity/pjm/central"
+            // },
+            // CAISO: {
+            //     wpp: "https://your.github.io/data/electricity/wpp/wpp"
+            // },
+            ERCOT:{
+                North: zoneLink + "ERCOT/2025/ERCOT_Zone/north.csv",
+                West: zoneLink + "ERCOT/2025/ERCOT_Zone/west.csv",
+                South: zoneLink + "ERCOT/2025/ERCOT_Zone/south.csv",
+                Houston: zoneLink + "ERCOT/2025/ERCOT_Zone/houston.csv"
+            }
+        };
+
+        var shapefiles = [
+            { path: "MISO_Market_Zones.zip", color: "blue", name: "MISO"},
+            { path: "ercot_load_zones_shp.zip", color: "green", name: "ERCOT"},
+            { path: "spp_market_zones.zip", color: "red", name: "SPP"},
+            { path: "nyiso_load_zones.zip", color: "purple", name: "NYISO"},
+            { path: "NE_load_zones.zip", color: "orange", name: "ISONE"},
+            { path: "pjm_loadzones_shp.zip", color: "yellow", name: "PJM"},
+            { path: "WPP_view.zip", color:"gray", name:"CAISO"}
+        ];
+
+        var zoneGroup = L.layerGroup(); 
+
+        shapefiles.forEach(f => {
+            var layer = new L.Shapefile(f.path, {
+                onEachFeature: function (feature, layer) {
+                    var name = feature.properties.Zone || feature.properties.Zone_Name || feature.properties.ZONE_NAME
+                    || feature.properties.Name || feature.properties.NAME || feature.properties.BA_Abrev || "Unnamed";
+                    var url = (zoneLinks[f.name] && zoneLinks[f.name][name]) || "#";
+                    layer.bindPopup(`<b>${f.name} Zone:</b> ${name}<br>
+                               <a href="${url}" target="_blank">Zone Data</a>`);
+                },
+                style: function () {
+                    return { color: f.color, weight: 2, fillOpacity: 0.3 };
+                }
+            });
+            layer.addTo(zoneGroup);
+        });
+
+        zoneGroup.addTo(map);
+
 
         //clear highlights when popup closes
         map.on('popupclose', function() {
@@ -98,7 +202,8 @@
         //layer control
         L.control.layers(null, {
             'Cities': cityLayer,
-            'Water Gauges': gaugeLayer
+            'Water Gauges': gaugeLayer,
+            'Load Zones' : zoneGroup
         }).addTo(map);
 
         function haversineDistance(lat1, lon1, lat2, lon2) {
@@ -159,7 +264,7 @@
                     lat: city.lat,
                     lon: city.lon,
                     koppen: city.koppen,
-                    url1: city.url1,
+                    url: city.url,
                     distance: haversineDistance(lat, lon, city.lat, city.lon),
                     match: city.koppen === koppen
                 };
@@ -201,7 +306,7 @@
                 
                 content += '&nbsp;&nbsp;&nbsp;' + '<b>' + city.name + '</b><br>';
                 content += '&nbsp;&nbsp;&nbsp;' + city.distance.toFixed(1) + ' miles' + note + '<br>';
-                content += '&nbsp;&nbsp;&nbsp;<a href="' + city.url1 + '" target="_blank">View Data</a><br><br>';
+                content += '&nbsp;&nbsp;&nbsp;<a href="' + city.url + '" target="_blank">View Data</a><br><br>';
             });
             
             content += '</div>';
