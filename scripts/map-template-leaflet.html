@@ -68,8 +68,8 @@
                 color: 'blue',
                 fillColor: 'blue',
                 fillOpacity: 0.6,
-                weight: 1
-            }).bindPopup(city.name).addTo(cityLayer);
+                weight: 2
+           }).bindPopup('<b> City: ' + city.name +'<br><a href="' + city.url1 + '" target="_blank">View Data</a>').addTo(cityLayer);
         });
         
 
@@ -83,8 +83,8 @@
                 color: 'orange',
                 fillColor: 'orange',
                 fillOpacity: 0.6,
-                weight: 1
-            }).bindPopup('<b>Gauge, State: ' + g.name + '<br><a href="' + g.url + '" target="_blank">View Data</a>')
+                weight: 2
+            }).bindPopup('<b>Gauge, State: ' + g.name +'<br><a href="' + g.data_url + '" target="_blank">View Data</a>' +'<br><a href="' + g.url + '" target="_blank">View Gauge Info</a>')
             .addTo(gaugeLayer);
         });
         gaugeLayer.addTo(map);
@@ -264,7 +264,7 @@
                     lat: city.lat,
                     lon: city.lon,
                     koppen: city.koppen,
-                    url: city.url,
+                    url1: city.url1,
                     distance: haversineDistance(lat, lon, city.lat, city.lon),
                     match: city.koppen === koppen
                 };
@@ -306,7 +306,7 @@
                 
                 content += '&nbsp;&nbsp;&nbsp;' + '<b>' + city.name + '</b><br>';
                 content += '&nbsp;&nbsp;&nbsp;' + city.distance.toFixed(1) + ' miles' + note + '<br>';
-                content += '&nbsp;&nbsp;&nbsp;<a href="' + city.url + '" target="_blank">View Data</a><br><br>';
+                content += '&nbsp;&nbsp;&nbsp;<a href="' + city.url1 + '" target="_blank">View Data</a><br><br>';
             });
             
             content += '</div>';
