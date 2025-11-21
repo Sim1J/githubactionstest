@@ -46,8 +46,9 @@ for gauge in gauges:
     STATE = gauge["state"]
 
     # create state-specific directory
-    state_dir = DATA_DIR / STATE
+    state_dir = DATA_DIR / STATE / GAUGE_ID
     state_dir.mkdir(parents=True, exist_ok=True)
+
     url = f"https://api.water.noaa.gov/nwps/v1/gauges/{GAUGE_ID}/stageflow/forecast"
 
     try:
@@ -96,10 +97,13 @@ for gauge in gauges:
     if not issued:
         issued = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
+    # Determine year
+    year = issued[:4]  # e.g., "2025"
+
     header = ["forecast_day", "time_of_1h"] + [f"{i+1}h" for i in range(MAX_HOURS)]
     row = [issued, time_of_1h] + csv_values
 
-    csv_file = state_dir / f"{GAUGE_ID}_forecast.csv"
+    csv_file = state_dir / f"{GAUGE_ID}_{year}.csv"
 
     # append row
     write_header = not csv_file.exists()
